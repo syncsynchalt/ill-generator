@@ -1,3 +1,3 @@
-module ill-generator
+module github.com/syncsynchalt/ill-generator
 
 go 1.18
