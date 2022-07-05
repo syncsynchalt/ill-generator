@@ -212,7 +212,7 @@ func main() {
 				// %nnnnnn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[6:])
 				val := numFromContext(context, num, 6)
-				if (val >= 0 && val < 10) {
+				if val >= 0 && val < 10 {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
 					fmt.Fprintf(writer, "0x%X (%d)", val, val)
@@ -222,7 +222,7 @@ func main() {
 				// %nnnn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[5:])
 				val := numFromContext(context, num, 5)
-				if (val >= 0 && val < 10) {
+				if val >= 0 && val < 10 {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
 					fmt.Fprintf(writer, "0x%X (%d)", val, val)
@@ -232,7 +232,7 @@ func main() {
 				// %nnnn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[4:])
 				val := numFromContext(context, num, 4)
-				if (val >= 0 && val < 10) {
+				if val >= 0 && val < 10 {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
 					fmt.Fprintf(writer, "0x%X (%d)", val, val)
@@ -242,7 +242,7 @@ func main() {
 				// %nnn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[3:])
 				val := numFromContext(context, num, 3)
-				if (val >= 0 && val < 10) {
+				if val >= 0 && val < 10 {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
 					fmt.Fprintf(writer, "0x%X (%d)", val, val)
@@ -252,7 +252,7 @@ func main() {
 				// %nn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[2:])
 				val := numFromContext(context, num, 2)
-				if (val >= 0 && val < 10) {
+				if val >= 0 && val < 10 {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
 					fmt.Fprintf(writer, "0x%X (%d)", val, val)
@@ -262,7 +262,7 @@ func main() {
 				// %n{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[1:])
 				var val = context[num]
-				if (val >= 0 && val < 10) {
+				if val >= 0 && val < 10 {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
 					fmt.Fprintf(writer, "0x%X (%d)", val, val)
@@ -287,10 +287,10 @@ func isNum(c byte) bool {
 	return c >= '0' && c <= '9'
 }
 
-func numFromContext(context byte[], index int, bytes int) (num int) {
+func numFromContext(context []byte, index int, byteCount int) int {
 	val := 0
-	for b := 0; b < bytes; b++ {
-		val |= int(context[index + b]) << (8*b)
+	for b := 0; b < byteCount; b++ {
+		val |= int(context[index+b]) << (8 * b)
 	}
 	return val
 }
