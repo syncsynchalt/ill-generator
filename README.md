@@ -40,6 +40,10 @@ Interprets the following commands in templates:
    prints the 24-bit number {num}..{num+2} as capital hex with leading "0x"
 * `%xxxx{num}`:
    prints the 32-bit number {num}..{num+3} as capital hex with leading "0x"
+* `%xxxxx{num}`:
+   prints the 40-bit number {num}..{num+4} as capital hex with leading "0x"
+* `%xxxxxx{num}`:
+   prints the 48-bit number {num}..{num+5} as capital hex with leading "0x"
 * `%d{num}`:
    prints the numbered byte from current context as decimal number
 * `%dd{num}`:
@@ -48,6 +52,10 @@ Interprets the following commands in templates:
    prints the 24-bit number {num}..{num+2} as decimal number
 * `%dddd{num}`:
    prints the 32-bit number {num}..{num+3} as decimal number
+* `%ddddd{num}`:
+   prints the 40-bit number {num}..{num+4} as decimal number
+* `%dddddd{num}`:
+   prints the 48-bit number {num}..{num+5} as decimal number
 * `%n{num}`:
    prints the numbered byte from current context as capital hex with leading "0x"
    then in parenthetical decimal, unless the number is less than 0x0a in which case
@@ -62,6 +70,14 @@ Interprets the following commands in templates:
    it only prints the decimal number (since it's the same in hex and dec).
 * `%nnnn{num}`:
    prints the 32-bit number {num}..{num+3} as capital hex with leading "0x"
+   then in parenthetical decimal, unless the number is less than 0x0a in which case
+   it only prints the decimal number (since it's the same in hex and dec).
+* `%nnnnn{num}`:
+   prints the 40-bit number {num}..{num+4} as capital hex with leading "0x"
+   then in parenthetical decimal, unless the number is less than 0x0a in which case
+   it only prints the decimal number (since it's the same in hex and dec).
+* `%nnnnnn{num}`:
+   prints the 48-bit number {num}..{num+5} as capital hex with leading "0x"
    then in parenthetical decimal, unless the number is less than 0x0a in which case
    it only prints the decimal number (since it's the same in hex and dec).
 * `%stop`:

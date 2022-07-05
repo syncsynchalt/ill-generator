@@ -133,22 +133,34 @@ func main() {
 				i += end + 1
 				writer.Write([]byte(template[i:]))
 				i = len(template)
+			} else if len(line) > 6 && line[0:6] == "dddddd" {
+				// %dddddd{bytenum} (as decimal)
+				num, span := parseNumber(line[6:])
+				val := numFromContext(context, num, 6)
+				fmt.Fprintf(writer, "%d", val)
+				i += 1 + 6 + span
+			} else if len(line) > 5 && line[0:5] == "ddddd" {
+				// %ddddd{bytenum} (as decimal)
+				num, span := parseNumber(line[5:])
+				val := numFromContext(context, num, 5)
+				fmt.Fprintf(writer, "%d", val)
+				i += 1 + 5 + span
 			} else if len(line) > 4 && line[0:4] == "dddd" {
 				// %dddd{bytenum} (as decimal)
 				num, span := parseNumber(line[4:])
-				val := int(context[num])<<24 | int(context[num+1])<<16 | int(context[num+2])<<8 | int(context[num+3])
+				val := numFromContext(context, num, 4)
 				fmt.Fprintf(writer, "%d", val)
 				i += 1 + 4 + span
 			} else if len(line) > 3 && line[0:3] == "ddd" {
 				// %ddd{bytenum} (as decimal)
 				num, span := parseNumber(line[3:])
-				val := int(context[num])<<16 | int(context[num+1])<<8 | int(context[num+2])
+				val := numFromContext(context, num, 3)
 				fmt.Fprintf(writer, "%d", val)
 				i += 1 + 3 + span
 			} else if len(line) > 2 && line[0:2] == "dd" {
 				// %dd{bytenum} (as decimal)
 				num, span := parseNumber(line[2:])
-				val := int(context[num])<<8 | int(context[num+1])
+				val := numFromContext(context, num, 2)
 				fmt.Fprintf(writer, "%d", val)
 				i += 1 + 2 + span
 			} else if len(line) > 1 && line[0] == 'd' {
@@ -161,22 +173,34 @@ func main() {
 				num, span := parseNumber(line[1:])
 				fmt.Fprintf(writer, "%02x", context[len(context)-num])
 				i += 1 + 1 + span
+			} else if len(line) > 6 && line[0:6] == "xxxxxx" {
+				// %xxxxxx{bytenum} (as 0xHex)
+				num, span := parseNumber(line[6:])
+				val := numFromContext(context, num, 6)
+				fmt.Fprintf(writer, "0x%X", val)
+				i += 1 + 6 + span
+			} else if len(line) > 5 && line[0:5] == "xxxxx" {
+				// %xxxxx{bytenum} (as 0xHex)
+				num, span := parseNumber(line[4:])
+				val := numFromContext(context, num, 5)
+				fmt.Fprintf(writer, "0x%X", val)
+				i += 1 + 5 + span
 			} else if len(line) > 4 && line[0:4] == "xxxx" {
 				// %xxxx{bytenum} (as 0xHex)
 				num, span := parseNumber(line[4:])
-				val := int(context[num])<<24 | int(context[num+1])<<16 | int(context[num+2])<<8 | int(context[num+3])
+				val := numFromContext(context, num, 4)
 				fmt.Fprintf(writer, "0x%X", val)
 				i += 1 + 4 + span
 			} else if len(line) > 3 && line[0:3] == "xxx" {
 				// %xxx{bytenum} (as 0xHex)
 				num, span := parseNumber(line[3:])
-				val := int(context[num])<<16 | int(context[num+1])<<8 | int(context[num+2])
+				val := numFromContext(context, num, 3)
 				fmt.Fprintf(writer, "0x%X", val)
 				i += 1 + 3 + span
 			} else if len(line) > 2 && line[0:2] == "xx" {
 				// %xx{bytenum} (as 0xHex)
 				num, span := parseNumber(line[2:])
-				val := int(context[num])<<8 | int(context[num+1])
+				val := numFromContext(context, num, 2)
 				fmt.Fprintf(writer, "0x%X", val)
 				i += 1 + 2 + span
 			} else if len(line) > 1 && line[0] == 'x' {
@@ -184,10 +208,30 @@ func main() {
 				num, span := parseNumber(line[1:])
 				fmt.Fprintf(writer, "0x%X", context[num])
 				i += 1 + 1 + span
+			} else if len(line) > 4 && line[0:6] == "nnnnnn" {
+				// %nnnnnn{bytenum} (as 0xHex (dec))
+				num, span := parseNumber(line[6:])
+				val := numFromContext(context, num, 6)
+				if (val >= 0 && val < 10) {
+					fmt.Fprintf(writer, "%d", val)
+				} else {
+					fmt.Fprintf(writer, "0x%X (%d)", val, val)
+				}
+				i += 1 + 6 + span
+			} else if len(line) > 5 && line[0:5] == "nnnnn" {
+				// %nnnn{bytenum} (as 0xHex (dec))
+				num, span := parseNumber(line[5:])
+				val := numFromContext(context, num, 5)
+				if (val >= 0 && val < 10) {
+					fmt.Fprintf(writer, "%d", val)
+				} else {
+					fmt.Fprintf(writer, "0x%X (%d)", val, val)
+				}
+				i += 1 + 5 + span
 			} else if len(line) > 4 && line[0:4] == "nnnn" {
 				// %nnnn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[4:])
-				val := int(context[num])<<24 | int(context[num+1])<<16 | int(context[num+2])<<8 | int(context[num+3])
+				val := numFromContext(context, num, 4)
 				if (val >= 0 && val < 10) {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
@@ -197,7 +241,7 @@ func main() {
 			} else if len(line) > 3 && line[0:3] == "nnn" {
 				// %nnn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[3:])
-				val := int(context[num])<<16 | int(context[num+1])<<8 | int(context[num+2])
+				val := numFromContext(context, num, 3)
 				if (val >= 0 && val < 10) {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
@@ -207,7 +251,7 @@ func main() {
 			} else if len(line) > 2 && line[0:2] == "nn" {
 				// %nn{bytenum} (as 0xHex (dec))
 				num, span := parseNumber(line[2:])
-				val := int(context[num])<<8 | int(context[num+1])
+				val := numFromContext(context, num, 2)
 				if (val >= 0 && val < 10) {
 					fmt.Fprintf(writer, "%d", val)
 				} else {
@@ -241,6 +285,14 @@ func main() {
 
 func isNum(c byte) bool {
 	return c >= '0' && c <= '9'
+}
+
+func numFromContext(context byte[], index int, bytes int) (num int) {
+	val := 0
+	for b := 0; b < bytes; b++ {
+		val |= int(context[index + b]) << (8*b)
+	}
+	return val
 }
 
 func parseNumber(line string) (num int, span int) {
