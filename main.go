@@ -290,7 +290,7 @@ func isNum(c byte) bool {
 func numFromContext(context []byte, index int, byteCount int) int {
 	val := 0
 	for b := 0; b < byteCount; b++ {
-		val |= int(context[index+b]) << (8 * b)
+		val |= int(context[index+b]) << (8 * (byteCount-b-1))
 	}
 	return val
 }
